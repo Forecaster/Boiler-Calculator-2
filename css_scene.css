@@ -1,0 +1,100 @@
+.scene
+{
+  border: 6px double black;
+  
+  margin: 15px;
+  width: 400px;
+}
+
+.scene_name
+{
+  font-family: Minecraft;
+  background-color: lightblue;
+}
+
+.sky
+{
+  display: flex;
+  
+  height: 150px;
+  background-color: lightblue;
+  
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.machines
+{
+  margin-top: auto;
+  margin-bottom: 0px;
+}
+
+.ground
+{
+  background-image: url('images/scene/grass_x2.png');
+  height: 32px;
+}
+
+.steel_tank
+{
+  display: inline-block;
+  
+  width: 96px;
+  height: 128px;
+  
+  background-image: url('images/scene/steel_tank_x2.png');
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+.boiler
+{
+  display: inline-block;
+}
+
+.boiler_tanks
+{
+  width:92px;
+  height: 96px;
+  
+  margin-left: 2px;
+  margin-right: 2px;
+  
+  background-image: url('images/scene/boiler_tank_lp_x2.png');
+}
+
+.boiler_firebox
+{
+  width: 96px;
+  height: 32px;
+  
+  background-image: url('images/scene/firebox_solid_sheet.png');
+}
+
+.woodTank
+{
+  display: inline-block;
+  
+  width: 96px;
+  height: 96px;
+
+  background-image: url('images/scene/watertank.png');
+}
+
+.valve
+{
+  width: 32px;
+  height: 32px;
+  
+  background-image: url('images/scene/valve_sheet.png');
+}
+
+.valve_control
+{
+  display: inline-block;
+  
+  width: 43%;
+  height: 100%;
+  
+  cursor: pointer;
+}

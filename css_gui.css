@@ -1,0 +1,218 @@
+.gui_name
+{
+  display: inline;
+  font-family: Minecraft;
+}
+
+.pin
+{
+  display: inline-block;
+  float: right;
+  
+  width: 20px;
+  height: 20px;
+  
+  cursor: pointer;
+}
+
+.boiler_gui
+{
+   width: 352px;
+   height: 216;
+   
+   background: url('images/gui/gui_boiler_solid_mod_x2.png');
+}
+
+.steamReadout
+{
+  display: inline-block;
+  
+  position: relative;
+  top: 20px;
+  left: 4px;
+  
+  width: 90px;
+  
+  text-align: center;
+  font-family: Minecraft;
+}
+
+.waterReadout
+{
+  display: inline-block;
+  
+  position: relative;
+  top: 20px;
+  left: 108px;
+  
+  width: 90px;
+  
+  text-align: center;
+  font-family: Minecraft;
+}
+
+.steamTank
+{
+  /*display: inline-block;*/
+  
+  position: relative;
+  top: 23px;
+  left: 34px;
+  
+  width: 32px;
+  height: 94px;
+  
+  background-image: url('images/steam_still_x2.gif');
+  background-position: bottom;
+  background-repeat: repeat-x;
+}
+
+.steamGague
+{
+  background-image: url('images/gui/tank_gague_x2.png');
+  width: 100%;
+  height: 100%;
+}
+
+.tempGague
+{
+  display: inline-block;
+  
+  position: relative;
+  top: -75px;
+  left: 80;
+  
+  width: 12px;
+  /*height: 86px;*/
+  
+  background-image: url('images/gui/temp_gague_x2.png');
+  background-position: bottom;
+}
+
+.flame
+{
+  display: inline-block;
+  
+  position: relative;
+  top: -139px;
+  left: 110px;
+  
+  width: 28px;
+  height: 28px;
+  
+  background-image: url('images/gui/fire_x2.png');
+  background-position: bottom;
+}
+
+.boiler_fuel_slot
+{
+  display: inline-block;
+  position: relative;
+  
+  top: -101px;
+  left: 76px;
+  
+  width: 32px;
+  height: 32px;
+}
+
+.waterTank
+{
+  display: inline-block;
+  
+  position: relative;
+  top: -71px;
+  left: 148px;
+  
+  width: 32px;
+  height: 94px;
+  
+  background-image: url('images/water_still_x2.gif');
+  background-position: bottom;
+  background-repeat: repeat-x;
+}
+
+.waterGague
+{
+  background-image: url('images/gui/tank_gague_x2.png');
+  
+  width: 100%;
+  height: 100%;
+}
+
+.fuel_menu
+{
+  display: inline-block;
+  position: relative;
+  
+  left: 5px;
+  top: -47px;
+  
+  margin-left: -3px;
+}
+
+.fuel_arrow
+{
+  display: inline-block;
+  position: relative;
+  
+  width: 10px;
+  height: 20px;
+  
+  margin-top: -24px;
+}
+
+#fuel_arrow_left
+{
+  background-image: url('images/buttons/arrow_bg_left_var.png');
+  top: 29px;
+  left: 1px;
+}
+
+#fuel_arrow_right
+{
+  background-image: url('images/buttons/arrow_bg_right_var.png');
+  top: -7px;
+  left: 336px;
+}
+
+.fuel_slot
+{
+  display: inline-block;
+  
+  width: 32px;
+  height: 32px;
+}
+
+.fuel_item
+{
+  position: relative;
+  width: 32px;
+  height: 32px;
+  
+  background-image: url('images/fuel/unknown_fuel.png');
+}
+
+.fuel_log_slot
+{
+  position: relative;
+  width: 32px;
+  height: 32px;
+  
+  margin-bottom: 4px;
+  
+  /* background-color: rgba(255,0,0,.5); */
+}
+
+.fuel_log_number
+{
+  width: 38px;
+  height: 24px;
+  
+  color: white;
+  font-family: Minecraft;
+  font-size: 11pt;
+  text-align: right;
+  
+  margin-bottom: 12px;
+}
