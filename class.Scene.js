@@ -4,9 +4,9 @@ function Scene(id)
   "<div id=scene_" + id + " class=scene>" +
     "<div id=time_controls_" + id + " class=time_control_container>" +
       "<div id=time_control_pause_" + id + " class=\"time_control_pause pnt\" onClick=\"scenes[" + id + "].setTickRate(0);\"></div>" +
-      "<div id=time_control_half_" + id + " class=\"time_control_half pnt\" onClick=\"scenes[" + id + "].setTickRate(0.5);\"></div>" +
-      "<div id=time_control_run_" + id + " class=\"time_control_run pnt\" onClick=\"scenes[" + id + "].setTickRate(1);\"></div>" +
-      "<div id=time_control_double_" + id + " class=\"time_control_double pnt\" onClick=\"scenes[" + id + "].setTickRate(2);\"></div>" +
+      "<div id=time_control_half_" + id + " class=\"time_control_half pnt\" onClick=\"scenes[" + id + "].setTickRate(4);\"></div>" +
+      "<div id=time_control_run_" + id + " class=\"time_control_run pnt\" onClick=\"scenes[" + id + "].setTickRate(2);\"></div>" +
+      "<div id=time_control_double_" + id + " class=\"time_control_double pnt\" onClick=\"scenes[" + id + "].setTickRate(1);\"></div>" +
     "</div>" +
     "<div class=scene_name ><div style=\"display: inline-block;\" class=\"pnt\" onClick=\"mainGui.setBoiler(scenes[" + id + "]); mainGui.currentScene = " + id + "\">Scene #" + id + "</div></div>" +
     "<div class=sky>" +
@@ -44,7 +44,7 @@ function Scene(id)
   
   this.id = id;
   
-  this.tickRate = 0.5;
+  this.tickRate = 2;
   
   this.log = new FuelLog();
   this.boiler = new Boiler(id, 1, 500);
@@ -82,17 +82,17 @@ Scene.prototype.setTickRate = function(newTickRate)
   else
     document.getElementById("time_control_pause_" + this.id).style.backgroundPosition = "0px 0px";
     
-  if (newTickRate == 0.5)
+  if (newTickRate == 4)
     document.getElementById("time_control_half_" + this.id).style.backgroundPosition = "0px 16px";
   else
     document.getElementById("time_control_half_" + this.id).style.backgroundPosition = "0px 0px";
     
-  if (newTickRate == 1)
+  if (newTickRate == 2)
     document.getElementById("time_control_run_" + this.id).style.backgroundPosition = "0px 16px";
   else
     document.getElementById("time_control_run_" + this.id).style.backgroundPosition = "0px 0px";
     
-  if (newTickRate == 2)
+  if (newTickRate == 1)
     document.getElementById("time_control_double_" + this.id).style.backgroundPosition = "0px 16px";
   else
     document.getElementById("time_control_double_" + this.id).style.backgroundPosition = "0px 0px";
@@ -103,12 +103,7 @@ Scene.prototype.setTickRate = function(newTickRate)
 
 Scene.prototype.tick = function()
 {
-  if (this.tickRate.toString().indexOf(".")==-1)
-    var tick = tickCounter % this.tickRate;
-  else
-    var tick = (tickCounter % (this.tickRate * 10)) / 10;
-  
-  if (tick == 0)
+  if (true)
   {
     if (this.boiler.fuelItem != null)
       this.boiler.increaseTemp(1);
