@@ -1,9 +1,53 @@
 .scene
 {
+  position: relative;
   border: 6px double black;
   
   margin: 15px;
   width: 400px;
+}
+
+.time_control_container
+{
+  position: absolute;
+  right: 0px;
+}
+
+.time_control_pause
+{
+  display: inline-block;
+  background-image: url('images/buttons/time_pause.png');
+  
+  width: 24px;
+  height: 16px;
+}
+
+.time_control_half
+{
+  display: inline-block;
+  background-image: url('images/buttons/time_half.png');
+  
+  width: 24px;
+  height: 16px;
+}
+
+.time_control_run
+{
+  display: inline-block;
+  background-image: url('images/buttons/time_run.png');
+  background-position: 0px 16px;
+  
+  width: 24px;
+  height: 16px;
+}
+
+.time_control_double
+{
+  display: inline-block;
+  background-image: url('images/buttons/time_double.png');
+  
+  width: 24px;
+  height: 16px;
 }
 
 .scene_name

@@ -65,8 +65,8 @@
   <div class="pnt close_button" onClick="closeOptionsMenu();">Close</div>
 </div>
 
-<div id=tt_steel_tank class=tooltip style="top: -500px;">0/0</div>
-<div id=tt_wood_tank class=tooltip style="top: -500px;">0/0</div>
+<div id=tt_steel_tank class=tooltip style="top: -500px; z-index: 10000;">0/0</div>
+<div id=tt_wood_tank class=tooltip style="top: -500px; z-index: 10000;">0/0</div>
 
 <div id=gui_container style="position: fixed; right: 15px; top: 15px; width: 420px;">
   <div style="display: inline-block; position: absolute; width: 352px; top: 20px;">
@@ -129,37 +129,6 @@
 
 <div class=main>
   <div id=scene_container>
-    <!--<div id=scene_0 class=scene>
-      <div class=sky>
-        <div class=machines>
-          <div id=steel_tank_fluid_0 class="steel_tank counterweight" style="background-image: url('images/steam_still_x2.gif'); background-size: 96px 32px;">
-            <div id=steel_tank_0 class=steel_tank></div>
-          </div>
-          <div style="display: inline-block;" class=counterweight>
-            <div id=steam_valve_0 class=valve style="background-position: 0px 0px;">
-              <div id=steam_valve_open_0 class=valve_control onClick="steamValve.open();" title="Open valve"></div>
-              <div id=steam_valve_close_0 class=valve_control onClick="steamValve.close();" title="Close Valve" ></div>
-            </div>
-            <div id=steam_valve_0_readout style="font-size: 10pt;">0%</div>
-          </div>
-          <div id=boiler_0 class="boiler counterweight">
-            <div id=boiler_tanks_0 class=boiler_tanks></div>
-            <div id=boiler_firebox_0 class=boiler_firebox></div>
-          </div>
-          <div style="display: inline-block;" class=counterweight>
-            <div id=water_valve_0 class=valve style="background-position: 0px 0px;">
-              <div id=water_valve_open_0 class=valve_control onClick="waterValve.open();" title="Open valve"></div>
-              <div id=water_valve_close_0 class=valve_control onClick="waterValve.close();" title="Close Valve" ></div>
-            </div>
-            <div id=water_valve_0_readout style="font-size: 10pt;">0%</div>
-          </div>
-          <div id=wood_tank_0 class="woodTank counterweight">
-          </div>
-        </div>
-      </div>
-      <div class=ground>
-      </div>
-    </div>-->
   </div>
   <div style="width: 440px; font-family: Minecraft;" class=pnt onClick="scenes.push(new Scene(scenes.length)); mainGui.setBoiler(scenes[(scenes.length - 1)]);">Add Scene</div>
 </div>
