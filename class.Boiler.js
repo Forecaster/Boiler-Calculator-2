@@ -7,16 +7,37 @@ function Boiler(scene, numTanks, maxTemp)
   
   this.steamTank = (this.numTanks * 16000);
   this.waterTank = (this.numTanks * 4000);
-  
+
+  this.partialConversions = 0;
   this.steamLevel = 0;
   this.waterLevel = 0;
   this.temp = 0;
-  
+
+  this.fuelBufferMax = 0;
   this.fuelBuffer = 0;
   this.fuelItem = null;
+
+  this.isBurning = false;
+  this.textureOn = false;
 }
 
-Boiler.prototype.increaseTemp = function(temp)
+Boiler.prototype.addFuel = function()
+{
+  if (this.fuelItem != null)
+  {
+    this.fuelBuffer = parseFloat(this.fuelBuffer) + parseFloat(this.fuelItem.burnTime);
+    this.fuelBufferMax = this.fuelItem.burnTime;
+    scenes[this.scene].log.addItem(this.fuelItem, 1);
+    mainGui.updateLog();
+  }
+}
+
+Boiler.prototype.getHeatPercentage = function()
+{
+  return this.temp / this.maxTemp;
+}
+
+Boiler.prototype.addHeat = function(temp)
 {
   var newTemp = this.temp + temp;
   
@@ -27,7 +48,7 @@ Boiler.prototype.increaseTemp = function(temp)
   
 }
 
-Boiler.prototype.decreaseTemp = function(temp)
+Boiler.prototype.removeHeat = function(temp)
 {
   var newTemp = this.temp - temp;
   
@@ -38,13 +59,66 @@ Boiler.prototype.decreaseTemp = function(temp)
   
 }
 
-Boiler.prototype.getSteam = function()
+Boiler.prototype.increaseTemp = function()
 {
-  return this.steam;
+  if (this.temp == this.maxTemp)
+    return 0;
+
+  var change = HEAT_STEP + ((this.temp / this.maxTemp) * HEAT_STEP * 3);
+  this.temp += change / this.numTanks;
+  this.temp = Math.min(this.temp, this.maxTemp);
+  return change;
+}
+
+Boiler.prototype.decreaseTemp = function()
+{
+  if (this.temp == COLD_TEMP)
+    return 0;
+
+  var change = HEAT_STEP + ((this.temp / this.maxTemp) * HEAT_STEP * 3);
+  this.temp -= (change / this.numTanks);
+  this.temp = Math.max(this.temp, COLD_TEMP);
+}
+
+Boiler.prototype.getFuelPerCycle = function()
+{
+  var fuel = FUEL_PER_BOILER_CYCLE;
+  fuel -= this.numTanks * FUEL_PER_BOILER_CYCLE * 0.0125;
+  fuel += (FUEL_HEAT_INEFFICIENCY * this.getHeatPercentage());
+  fuel += FUEL_PRESSURE_INEFFICIENCY * (this.maxTemp / MAX_HEAT_HIGH);
+  fuel *= this.numTanks;
+  fuel *= efficiencyModifier;
+  fuel *= options.fuelPerSteamMultiplier;
+
+  return fuel;
+}
+
+Boiler.prototype.convertSteam = function()
+{
+  if (!this.isBurning || this.temp < BOILING_POINT)
+    return 0;
+
+  this.partialConversions += this.numTanks * this.getHeatPercentage();
+  var waterCost = parseInt(this.partialConversions);
+  if (waterCost <= 0)
+    return 0;
+
+  this.partialConversions -= waterCost;
+
+  var drainedWater = this.removeWater(waterCost);
+
+  waterCost = Math.min(waterCost, drainedWater);
+
+  var steam = STEAM_PER_UNIT_WATER * waterCost;
+
+  this.addSteam(steam);
+  return steam;
 }
 
 Boiler.prototype.addSteam = function(steam)
 {
+  var returnValue;
+
   if (this.steamLevel < this.steamTank)
   {
     var newSteamLevel = this.steamLevel + steam;
@@ -52,7 +126,7 @@ Boiler.prototype.addSteam = function(steam)
     if (newSteamLevel <= this.steamTank)
     {
       this.steamLevel = newSteamLevel;
-      return steam;
+      returnValue = steam;
     }
     else
     {
@@ -60,11 +134,13 @@ Boiler.prototype.addSteam = function(steam)
       
       this.steamLevel = this.steamTank;
       
-      return (steam - dif);
+      returnValue = (steam - dif);
     }
   }
   else
-    return 0;
+    returnValue = 0;
+
+  return returnValue;
 }
 
 Boiler.prototype.removeSteam = function(steam)
@@ -92,6 +168,14 @@ Boiler.prototype.removeSteam = function(steam)
 
 Boiler.prototype.addWater = function(water)
 {
+  var returnValue;
+
+  if (this.temp >= SUPER_HEATED && water > 0 && this.waterLevel == 0)
+  {
+    scenes[this.scene].explode();
+    return 0;
+  }
+
   if (this.waterLevel < this.waterTank)
   {
     var newWaterLevel = this.waterLevel + water;
@@ -99,7 +183,7 @@ Boiler.prototype.addWater = function(water)
     if (newWaterLevel <= this.waterTank)
     {
       this.waterLevel = newWaterLevel;
-      return water;
+      returnValue = water;
     }
     else
     {
@@ -107,13 +191,13 @@ Boiler.prototype.addWater = function(water)
       
       this.waterLevel = this.waterTank;
       
-      return (water - dif);
+      returnValue = water - dif;
     }
   }
   else
-    return 0;
-  
-  return "Unknown Error";
+    returnValue = 0;
+
+  return returnValue;
 }
 
 Boiler.prototype.removeWater = function(water)

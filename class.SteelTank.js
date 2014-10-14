@@ -72,5 +72,5 @@ SteelTank.prototype.update = function()
     target.style.backgroundSize = str;
     
   if (activeTooltip != null && activeTooltipScene == this.scene && activeTooltip.id == "tt_steel_tank")
-    activeTooltip.innerHTML = this.amount + "/" + this.size + " mb";
+    document.getElementById(activeTooltip.id + "_contents").innerHTML = this.amount + "/" + this.size + " mb";
 }

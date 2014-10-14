@@ -21,26 +21,34 @@
 <link rel="stylesheet" type="text/css" href="css_scene.css" />
 <link rel="stylesheet" type="text/css" href="css_gui.css" />
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script language="javascript" src="scripts.js" ></script>
-<script language="javascript" src="control_track.js" ></script>
+<script language="javascript" src="scripts.js"></script>
+<script language="javascript" src="control_track.js"></script>
 
-<script language="javascript" src="class.Boiler.js" ></script>
-<script language="javascript" src="class.Gui.js" ></script>
-<script language="javascript" src="class.Valve.js" ></script>
-<script language="javascript" src="class.WoodTank.js" ></script>
-<script language="javascript" src="class.SteelTank.js" ></script>
-<script language="javascript" src="class.Scene.js" ></script>
-<script language="javascript" src="class.Fuel.js" ></script>
-<script language="javascript" src="class.FuelLog.js" ></script>
+<script language="javascript" src="class.Boiler.js"></script>
+<script language="javascript" src="class.Gui.js"></script>
+<script language="JavaScript" src="class.Options.js"></script>
+<script language="javascript" src="class.Valve.js"></script>
+<script language="javascript" src="class.WoodTank.js"></script>
+<script language="javascript" src="class.SteelTank.js"></script>
+<script language="javascript" src="class.Scene.js"></script>
+<script language="javascript" src="class.Fuel.js"></script>
+<script language="javascript" src="class.FuelLog.js"></script>
 
 <body style="overflow-y: scroll;">
+<div id="globalTime">
+  <div id="global_pause" class="time_control_pause pnt" onClick="globalPause();"></div>
+  <div id="global_run" class="time_control_run pnt" onClick="globalRun();"></div>
+  <div id="global_step" class="time_control_half pnt" onClick="globalStep();"></div>
+</div>
 <div onClick="" class=pnt>Get fuel</div>
-<div onClick="mainGui.updateLog(mainLog);" class=pnt>Update log</div>
 
 <div id=debug style="position: absolute; bottom: 5px; right: 5px;">
 </div>
 
-<div id=nutter class="notifier pnt" style="opacity: 0; transition-duration: 2s;" onClick="this.style.transitionDuration = '2s'; this.style.opacity = 0;">
+<div id=tps_display style="position: fixed; bottom: 5px; left: 5px; z-index: 1000; background-color: lightgray;">
+</div>
+
+<div id=nutter class="notifier" style="opacity: 0; transition-duration: 2s;" onClick="this.style.transitionDuration = '2s'; this.style.opacity = 0;">
   This is some notification!
 </div>
 
@@ -65,8 +73,46 @@
   <div class="pnt close_button" onClick="closeOptionsMenu();">Close</div>
 </div>
 
-<div id=tt_steel_tank class=tooltip style="top: -500px; z-index: 10000;">0/0</div>
-<div id=tt_wood_tank class=tooltip style="top: -500px; z-index: 10000;">0/0</div>
+<div id="new_scene_menu" class="options_menu" style="visibility: collapse;">
+  <div style="margin-bottom: 4px;">New Scene</div>
+  <div style="position: absolute; left: 15px; top: 40px;">
+    <div style="float: left;">Boiler Size:</div>
+    <div style="float: right; margin-bottom: 5px;">
+      <select name="boiler_size">
+        <option value="1">1x1x1 (1)</option>
+        <option value="8">2x2x2 (8)</option>
+        <option value="12">2x2x3 (12)</option>
+        <option value="18">3x3x2 (18)</option>
+        <option value="27">3x3x3 (27)</option>
+        <option value="36">3x3x4 (36)</option>
+      </select>
+    </div>
+  </div>
+  <div style="position: absolute; left: 15px; top: 80px;">
+    <div style="float: left;">Boiler Type:</div>
+    <div style="float: right;">
+      <select name="boiler_type">
+        <option value="0">Low Pressure</option>
+        <option value="1">High Pressure</option>
+      </select>
+    </div>
+  </div>
+  <div style="position: absolute; bottom: 5px; left: 25%; margin-left: -67px;">Create Scene</div>
+  <div style="position: absolute; bottom: 5px; right: 25%; margin-right: -33px;">Cancel</div>
+</div>
+
+<div id="tt_steel_tank" class="tooltip" style="top: -500px; z-index: 10000;">
+  <div>Steel Tank</div>
+  <div id="tt_steel_tank_contents"></div>
+</div>
+<div id="tt_wood_tank" class="tooltip" style="top: -500px; z-index: 10000;">
+  <div>Water Tank</div>
+  <div id="tt_wood_tank_contents"></div>
+</div>
+<div id="tt_temp" class="tooltip" style="top: -500px; z-index: 10000;">
+  <div>Temperature</div>
+  <div id="tt_temp_contents"></div>
+</div>
 
 <div id=gui_container style="position: fixed; right: 15px; top: 15px; width: 420px;">
   <div style="display: inline-block; position: absolute; width: 352px; top: 20px;">
@@ -76,30 +122,33 @@
       <div id=steam_readout class=steamReadout>0/16000</div>
       <div id=water_readout class=waterReadout>0/4000</div>
       
-      <div id=steam_tank class=steamTank style="background-size: 32px 0px;"><div class="steamGague"></div></div>
-      <div id=temp_gague class=tempGague style="height: 86px;" onClick="mainGui.boiler.temp = 500;"></div>
-      <div id=flame class=flame></div>
+      <div id="steam_tank" class="steamTank" style=""></div>
+      <div class="steamGague"></div>
+      <div id="temp_gague" class="tempGague" style=""></div>
+      <div id="temp_gague_overlay" class="tempGague" style="background: none;" onclick="mainGui.boiler.temp = mainGui.boiler.maxTemp;" onmouseover="setTooltip('tt_temp', 1);" onmouseout="clearTooltip();"></div>
+      <div id=flame class=flame style=""></div>
       <div id=boiler_fuel_slot class=boiler_fuel_slot style="background-image: none;" title="Middle click to clear."></div>
-      <div id=water_tank class=waterTank style="background-size: 32px 0px;"><div class="waterGague"></div></div>
+      <div id=water_tank class=waterTank style=""></div>
+      <div class="waterGague"></div>
       <div id=fuel_menu class=fuel_menu>
-        <div id=fuel_arrow_left class="fuel_arrow pnt" style="visibility: collapse;" onClick="fuelMenuSteps -= 1; mainGui.updateFuelMenu();"></div>
+        <div id=fuel_arrow_left class="fuel_arrow pnt" style="visibility: collapse;" onMouseDown="mouseDown = true; cycleFuelMenuLeft(500);" onMouseUp="mouseDown = false;" onClick="//fuelMenuSteps -= 1; mainGui.updateFuelMenu();"></div>
         <div style="position: relative; left: 14px;">
-          <div id=fuel_slot_0 class=fuel_slot><div id=fuel_item_0 class=fuel_item style="top: 0px; left: 0px; background-image: none;"></div></div>
-          <div id=fuel_slot_1 class=fuel_slot><div id=fuel_item_1 class=fuel_item style="top: 0px; left: 0px; background-image: none;"></div></div>
-          <div id=fuel_slot_2 class=fuel_slot><div id=fuel_item_2 class=fuel_item style="top: 0px; left: 0px; background-image: none;"></div></div>
-          <div id=fuel_slot_3 class=fuel_slot><div id=fuel_item_3 class=fuel_item style="top: 0px; left: 0px; background-image: none;"></div></div>
-          <div id=fuel_slot_4 class=fuel_slot><div id=fuel_item_4 class=fuel_item style="top: 0px; left: 0px; background-image: none;"></div></div>
-          <div id=fuel_slot_5 class=fuel_slot><div id=fuel_item_5 class=fuel_item style="top: 0px; left: 0px; background-image: none;"></div></div>
-          <div id=fuel_slot_6 class=fuel_slot><div id=fuel_item_6 class=fuel_item style="top: 0px; left: 0px; background-image: none;"></div></div>
-          <div id=fuel_slot_7 class=fuel_slot><div id=fuel_item_7 class=fuel_item style="top: 0px; left: 0px; background-image: none;"></div></div>
-          <div id=fuel_slot_8 class=fuel_slot><div id=fuel_item_8 class=fuel_item style="top: 0px; left: 0px; background-image: none;"></div></div>
+          <div id=fuel_slot_0 class=fuel_slot><div id=fuel_item_0 class=fuel_item style="top: 0; left: 0; background-image: none;"></div></div>
+          <div id=fuel_slot_1 class=fuel_slot><div id=fuel_item_1 class=fuel_item style="top: 0; left: 0; background-image: none;"></div></div>
+          <div id=fuel_slot_2 class=fuel_slot><div id=fuel_item_2 class=fuel_item style="top: 0; left: 0; background-image: none;"></div></div>
+          <div id=fuel_slot_3 class=fuel_slot><div id=fuel_item_3 class=fuel_item style="top: 0; left: 0; background-image: none;"></div></div>
+          <div id=fuel_slot_4 class=fuel_slot><div id=fuel_item_4 class=fuel_item style="top: 0; left: 0; background-image: none;"></div></div>
+          <div id=fuel_slot_5 class=fuel_slot><div id=fuel_item_5 class=fuel_item style="top: 0; left: 0; background-image: none;"></div></div>
+          <div id=fuel_slot_6 class=fuel_slot><div id=fuel_item_6 class=fuel_item style="top: 0; left: 0; background-image: none;"></div></div>
+          <div id=fuel_slot_7 class=fuel_slot><div id=fuel_item_7 class=fuel_item style="top: 0; left: 0; background-image: none;"></div></div>
+          <div id=fuel_slot_8 class=fuel_slot><div id=fuel_item_8 class=fuel_item style="top: 0; left: 0; background-image: none;"></div></div>
         </div>
-        <div id=fuel_arrow_right class="fuel_arrow pnt" style="visibility: collapse;" onClick="fuelMenuSteps += 1; mainGui.updateFuelMenu();"></div>
+        <div id=fuel_arrow_right class="fuel_arrow pnt" style="visibility: collapse;" onMouseDown="mouseDown = true; cycleFuelMenuRight(500);" onMouseUp="mouseDown = false;" onClick="//fuelMenuSteps += 1; mainGui.updateFuelMenu();"></div>
       </div>
     </div>
   </div>
   <div style="display: inline-block; position: relative; float: right;">
-    <div style="font-family: Minecraft; text-align: center;">Fuel<br>Log</div>
+    <div style="font-family: Minecraft,fantasy; text-align: center;">Fuel<br>Log</div>
     <div id=fuel_log style="background-image: url('images/gui/log_bar_x2.png'); width: 64px; height: 352px;">
       <div style="position: absolute; left: 16px; top: 56px;">
         <div id=fuel_log_slot_0 class=fuel_log_slot style=""></div>
@@ -130,16 +179,19 @@
 <div class=main>
   <div id=scene_container>
   </div>
-  <div style="width: 440px; font-family: Minecraft;" class=pnt onClick="scenes.push(new Scene(scenes.length)); mainGui.setBoiler(scenes[(scenes.length - 1)]);">Add Scene</div>
+  <div style="width: 440px; font-family: Minecraft,fantasy;" class=pnt onClick="scenes.push(new Scene(scenes.length)); mainGui.switchGuiTarget(scenes.length -1);">Add Scene</div>
 </div>
 
 <script language="javascript">
 //Global vars
+var paused = false;
+var mouseDown = false;
+
 var firstTick = 0;
 var lastTick = 0;
 var thisTick = 0;
 var tickCounter = 0;
-var lastAvrg = 0;
+var lastAvrg = 40;
 
 var request_start = 0;
 var request_end = 0;
@@ -154,32 +206,79 @@ var selectedFuelItem = null;
 var fuelMenuSteps = 0;
 var fuelMenuItems = [];
 
-  function tick()
+//Railcraft statics
+var COLD_TEMP = 20;
+var BOILING_POINT = 100;
+var SUPER_HEATED = 300;
+var MAX_HEAT_LOW = 500;
+var MAX_HEAT_HIGH = 1000;
+var HEAT_STEP = 0.05;
+var FUEL_PER_BOILER_CYCLE = 8;
+var FUEL_HEAT_INEFFICIENCY = 0.8;
+var FUEL_PRESSURE_INEFFICIENCY = 4;
+var STEAM_PER_UNIT_WATER = 160;
+var STEAM_PER_MJ = 5;
+var BOILERS_EXPLODE = true;
+
+//Railcraft options
+var efficiencyModifier = 1;
+
+  function tick(force = false)
   {
-    for (var i = 0; i < scenes.length; i++)
+    if (!paused || force)
     {
       tickCounter++;
-      scenes[i].tick();
-      
-      /* thisTick = new Date().getTime();
-      
+      for (var i = 0; i < scenes.length; i++)
+      {
+        scenes[i].tick();
+      }
+
+      thisTick = new Date().getTime();
+
       var secondsSinceStart = ((thisTick - firstTick) / 1000);
-      
-      if (tickCounter % 8 == 0)
-        lastAvrg = Math.round((tickCounter / secondsSinceStart) * 100) / 100;
-      
-      document.getElementById("debug").innerHTML = "Seconds since start: " + secondsSinceStart + " Average ticks per second: " + lastAvrg;
-      
-      lastTick = new Date().getTime(); */
+
+      lastAvrg = Math.round((tickCounter / secondsSinceStart) * 100) / 100;
+
+      //document.getElementById("debug").innerHTML = "Seconds since start: " + secondsSinceStart + " Average ticks per second: " + lastAvrg;
+      document.getElementById("tps_display").innerHTML = "Global TPS: " + lastAvrg;
+
+      lastTick = new Date().getTime();
+
+      mainGui.update();
     }
-    
-    mainGui.update();
+    //document.getElementById("debug").innerHTML = (Math.round(mainGui.boiler.fuelBuffer * 100) / 100) + " / " + mainGui.boiler.fuelBufferMax + " (" + mainGui.boiler.getFuelPerCycle() + ")";
+    //document.getElementById("debug").innerHTML = mainGui.boiler.temp;
+  }
+
+  function globalPause()
+  {
+    this.paused = true;
+    document.getElementById("global_pause").style.backgroundPosition = "0px 16px";
+    document.getElementById("global_run").style.backgroundPosition = "0px 0px";
+  }
+
+  function globalRun()
+  {
+    this.paused = false;
+    document.getElementById("global_pause").style.backgroundPosition = "0px 0px";
+    document.getElementById("global_run").style.backgroundPosition = "0px 16px";
+    this.firstTick = new Date().getTime();
+  }
+
+  function globalStep()
+  {
+    this.paused = true;
+    document.getElementById("global_pause").style.backgroundPosition = "0px 16px";
+    document.getElementById("global_run").style.backgroundPosition = "0px 0px";
+    tick(true);
   }
   
   var activeTooltip = null;
   var activeTooltipScene = 0;
   
   var toggleControl = 0;
+
+  var options = new Options();
   
   var scenes = [new Scene(0)];
   var fuels = [];
@@ -198,5 +297,5 @@ var fuelMenuItems = [];
   mainGui.update();
   
   firstTick = new Date().getTime();
-  setInterval(function() {tick();}, 50);
+  setInterval(function() {tick();}, 25);
 </script>

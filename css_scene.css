@@ -7,10 +7,17 @@
   width: 400px;
 }
 
+.scene_info_display
+{
+  position: absolute;
+  color: white;
+  background-color: gray;
+}
+
 .time_control_container
 {
   position: absolute;
-  right: 0px;
+  right: 0;
 }
 
 .time_control_pause
@@ -35,7 +42,7 @@
 {
   display: inline-block;
   background-image: url('images/buttons/time_run.png');
-  background-position: 0px 16px;
+  background-position: 0 16px;
   
   width: 24px;
   height: 16px;
@@ -52,7 +59,7 @@
 
 .scene_name
 {
-  font-family: Minecraft;
+  font-family: Minecraft,fantasy;
   background-color: lightblue;
 }
 
@@ -70,7 +77,7 @@
 .machines
 {
   margin-top: auto;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .ground
@@ -94,6 +101,24 @@
 .boiler
 {
   display: inline-block;
+}
+
+.boiler_tank_number
+{
+  font-family: Minecraft,fantasy;
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 50px;
+  height: 30px;
+
+  margin-left: -25px;
+  margin-top: -15px;
+
+  text-align: center;
+  vertical-align: middle;
 }
 
 .boiler_tanks

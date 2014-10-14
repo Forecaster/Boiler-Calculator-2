@@ -43,12 +43,15 @@ function setTooltip(id, scene)
 
 function clearTooltip()
 {
-  activeTooltip.style.top = "-500px";
-  activeTooltip.style.left = null;
-  
-  activeTooltip = null;
-  activeTooltipScene = 0;
-  document.onmousemove = null;
+  if (activeTooltip != null)
+  {
+    activeTooltip.style.top = "-500px";
+    activeTooltip.style.left = null;
+
+    activeTooltip = null;
+    activeTooltipScene = 0;
+    document.onmousemove = null;
+  }
 }
 
 function closeOptionsMenu()
@@ -106,4 +109,71 @@ function fuelQuery()
   current_request_id = setInterval("fuelQuerySuccess()", 100);
   
   $.post('script_fuel_query.php', { version: rcversion }, function(data) {returnData = data; request_end = new Date().getTime();}, "json");
+}
+
+function ticksToTime(ticks)
+{
+  var returnStr;
+
+  if (ticks != null && ticks != undefined)
+  {
+    var seconds = Math.floor(ticks / 20);
+    var minutes = Math.floor(seconds / 60);
+    var hours = Math.floor(minutes / 60);
+    var days = Math.floor(hours / 24);
+
+    if (days >= 1)
+      hours -= (days * 24);
+    if (hours >= 1)
+      minutes -= (hours * 60);
+    if (minutes >= 1)
+      seconds -= (minutes * 60);
+
+    if (days > 0)
+      returnStr = days + "d, " + hours + "h, " + minutes + "m, " + seconds + "s.";
+    else if (hours > 0)
+      returnStr =  hours + "h, " + minutes + "m, " + seconds + "s.";
+    else if (minutes > 0)
+      returnStr =  minutes + "m, " + seconds + "s.";
+    else if (seconds > 0)
+      returnStr =  seconds + "s.";
+  }
+  else
+    returnStr =  "0s.";
+
+  if (returnStr != null && returnStr.length > 0)
+    return returnStr;
+  else
+    return "0s.";
+}
+
+function cycleFuelMenuLeft(interval)
+{
+  if (mouseDown && (fuelMenuSteps != 0) && interval != null && interval != undefined)
+  {
+    fuelMenuSteps -= 1;
+    mainGui.updateFuelMenu();
+
+    if (interval > 150)
+      var newInterval = interval - 100;
+
+    setTimeout(cycleFuelMenuLeft, interval, [newInterval]);
+  }
+}
+
+function cycleFuelMenuRight(interval)
+{
+  var newInterval;
+  if (mouseDown && fuels.length > (fuelMenuSteps + 9) && interval != null && interval != undefined)
+  {
+    fuelMenuSteps += 1;
+    mainGui.updateFuelMenu();
+
+    if (interval > 150)
+      newInterval = interval - 100;
+    else
+      newInterval = interval;
+
+    setTimeout(cycleFuelMenuRight, interval, [newInterval]);
+  }
 }

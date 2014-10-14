@@ -30,8 +30,16 @@ function getPosition(element)
   
   while(element)
   {
-    xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
-    yPosition += (element.offsetTop - element.scrollTop + element.clientTop);
+    if (mainGui.positionLocked)
+    {
+      xPosition += (element.offsetLeft + element.clientLeft);
+      yPosition += (element.offsetTop + element.clientTop);
+    }
+    else
+    {
+      xPosition += (element.offsetLeft - element.scrollLeft + window.pageXOffset + element.clientLeft);
+      yPosition += (element.offsetTop - element.scrollTop + window.pageYOffset + element.clientTop);
+    }
     element = element.offsetParent;
   }
   return { x: xPosition, y: yPosition };
@@ -87,8 +95,8 @@ function onMouseDown(e)
         dragElement.style.left = null;
         
         mainGui.boiler.fuelItem = fuels[selectedFuelItem];
-        scenes[mainGui.currentScene].log.addItem(fuels[selectedFuelItem], 1); //temporary, remove later!
-        mainGui.updateLog(); //temporary, remove later!
+        //scenes[mainGui.currentScene].log.addItem(fuels[selectedFuelItem], 1);
+        //mainGui.updateLog();
         
         return false;
       }
@@ -126,7 +134,7 @@ function onMouseUp(e)
       var xOK = true;
     else
       var xOK = false;
-    
+
     if (e.clientY < (pos.y + 32) && e.clientY > pos.y)
       var yOK = true;
     else
@@ -138,8 +146,7 @@ function onMouseUp(e)
       dragElement.style.left = null;
       
       mainGui.boiler.fuelItem = fuels[selectedFuelItem];
-      scenes[mainGui.currentScene].log.addItem(fuels[selectedFuelItem], 1); //temporary, remove later!
-      mainGui.updateLog(); //temporary, remove later!
+      dragElement = null;
     }
     else if (dragElement != null)
     {

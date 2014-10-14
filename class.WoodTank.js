@@ -69,5 +69,5 @@ WoodTank.prototype.calculateRefillRate = function(biome)
 WoodTank.prototype.update = function()
 {
   if (activeTooltip != null && activeTooltipScene == this.scene && activeTooltip.id == "tt_wood_tank")
-    activeTooltip.innerHTML = this.waterLevel + "/" + this.size + " mb";
+    document.getElementById(activeTooltip.id + "_contents").innerHTML = this.waterLevel + "/" + this.size + " mb";
 }
