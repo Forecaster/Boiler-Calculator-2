@@ -36,7 +36,7 @@ Gui.prototype.setBoiler = function(scene)
   }
   else
     console.log("Failed to change boiler GUI focus. scene was not defined.");
-}
+};
 
 Gui.prototype.updateWater = function()
 {
@@ -52,7 +52,7 @@ Gui.prototype.updateWater = function()
 
     this.waterReadout.innerHTML = Math.round(this.boiler.waterLevel) + "/" + this.boiler.waterTank;
   }
-}
+};
 
 Gui.prototype.updateSteam = function()
 {
@@ -68,7 +68,7 @@ Gui.prototype.updateSteam = function()
 
     this.steamReadout.innerHTML = Math.round(this.boiler.steamLevel) + "/" + this.boiler.steamTank;
   }
-}
+};
 
 Gui.prototype.updateTemp = function()
 {
@@ -78,7 +78,7 @@ Gui.prototype.updateTemp = function()
 
   if (this.tempGague.style.height != str)
     this.tempGague.style.height = str;
-}
+};
 
 Gui.prototype.updateFlame = function()
 {
@@ -89,7 +89,7 @@ Gui.prototype.updateFlame = function()
   }
   else
     this.flame.style.height = "0px";
-}
+};
 
 Gui.prototype.updateFuel = function()
 {
@@ -108,7 +108,7 @@ Gui.prototype.updateFuel = function()
 
     this.lastBoilerFuelItem = this.boiler.fuelItem;
   }
-}
+};
 
 Gui.prototype.updateFuelMenu = function()
 {
@@ -121,7 +121,8 @@ Gui.prototype.updateFuelMenu = function()
 
       fuelMenuItems["fuel_item_" + index] = this.fuelItem;
 
-      fuelSlotElem.style.backgroundImage = "url('images/fuel/" + fuels[this.fuelItem].icon + ".png')";
+      if (fuels[this.fuelItem].icon != "none")
+        fuelSlotElem.style.backgroundImage = "url('images/fuel/" + fuels[this.fuelItem].icon + ".png')";
       fuelSlotElem.title = fuels[this.fuelItem].name + " (" + fuels[this.fuelItem].burnTime + ") [" + fuels[this.fuelItem].source + "]";
     }
 
@@ -139,7 +140,7 @@ Gui.prototype.updateFuelMenu = function()
   }
   else
     return false;
-}
+};
 
 Gui.prototype.updateLog = function()
 {
@@ -179,7 +180,7 @@ Gui.prototype.updateLog = function()
       document.getElementById("fuel_log_num_" + i).title = "";
     }
   }
-}
+};
 
 Gui.prototype.update = function()
 {
@@ -188,16 +189,17 @@ Gui.prototype.update = function()
   this.updateTemp();
   this.updateFuel();
   this.updateFlame();
+  this.updateFuelMenu();
 
   if (activeTooltip != null && activeTooltip.id == "tt_temp")
   {
     document.getElementById(activeTooltip.id + "_contents").innerHTML = Math.round((this.boiler.temp) * 100) / 100 + "/" + this.boiler.maxTemp;
   }
-}
+};
 
 Gui.prototype.switchGuiTarget = function(id)
 {
   this.currentScene = id;
   this.updateLog();
   this.setBoiler(scenes[id]);
-}
+};

@@ -1,5 +1,6 @@
 <?php
-  require_once("inc_connect.php");
+  require_once "krumo/class.krumo.php";
+  require_once "inc_connect.php";
 
   $query = "SELECT DISTINCT `version` FROM `fuel` ORDER BY `version` DESC";
 
@@ -38,14 +39,14 @@
 <div id="globalTime">
   <div id="global_pause" class="time_control_pause pnt" onClick="globalPause();"></div>
   <div id="global_run" class="time_control_run pnt" onClick="globalRun();"></div>
-  <div id="global_step" class="time_control_half pnt" onClick="globalStep();"></div>
+  <!--<div id="global_step" class="time_control_half pnt" onClick="globalStep();"></div>-->
 </div>
-<div onClick="" class=pnt>Get fuel</div>
+<div onClick="fuelQuery(); notify('Queried for fuel');" class=pnt>Get fuel</div>
 
 <div id=debug style="position: absolute; bottom: 5px; right: 5px;">
 </div>
 
-<div id=tps_display style="position: fixed; bottom: 5px; left: 5px; z-index: 1000; background-color: lightgray;">
+<div id=tps_display style="position: fixed; bottom: 5px; left: 5px; z-index: 1000; background-color: lightgray;" onMouseOver="this.style.visibility = 'collapse'; setTimeout(setVisible, 5000, this);">
 </div>
 
 <div id=nutter class="notifier" style="opacity: 0; transition-duration: 2s;" onClick="this.style.transitionDuration = '2s'; this.style.opacity = 0;">
@@ -55,7 +56,7 @@
 <div id=options_menu class=options_menu style="visibility: collapse;">
   <div style="margin-bottom: 10px;">Options</div>
   <div>
-    <div style="display: inline;">Railcraft version:</div>
+    <div style="display: inline;"><label for="version">Railcraft version:</label></div>
     <div style="display: inline; float: right;">
       <select name=version>
         <?php
@@ -78,7 +79,7 @@
   <div style="position: absolute; left: 15px; top: 40px;">
     <div style="float: left;">Boiler Size:</div>
     <div style="float: right; margin-bottom: 5px;">
-      <select name="boiler_size">
+      <select id="form_boiler_size" name="boiler_size">
         <option value="1">1x1x1 (1)</option>
         <option value="8">2x2x2 (8)</option>
         <option value="12">2x2x3 (12)</option>
@@ -91,14 +92,14 @@
   <div style="position: absolute; left: 15px; top: 80px;">
     <div style="float: left;">Boiler Type:</div>
     <div style="float: right;">
-      <select name="boiler_type">
-        <option value="0">Low Pressure</option>
-        <option value="1">High Pressure</option>
+      <select id="form_boiler_type" name="boiler_type">
+        <option value="LP">Low Pressure</option>
+        <option value="HP">High Pressure</option>
       </select>
     </div>
   </div>
-  <div style="position: absolute; bottom: 5px; left: 25%; margin-left: -67px;">Create Scene</div>
-  <div style="position: absolute; bottom: 5px; right: 25%; margin-right: -33px;">Cancel</div>
+  <div class="pnt" style="position: absolute; bottom: 5px; left: 25%; margin-left: -67px;" onClick="createNewScene();">Create Scene</div>
+  <div class="pnt" style="position: absolute; bottom: 5px; right: 25%; margin-right: -33px;" onClick="this.parentNode.style.visibility = 'collapse';">Cancel</div>
 </div>
 
 <div id="tt_steel_tank" class="tooltip" style="top: -500px; z-index: 10000;">
@@ -179,7 +180,8 @@
 <div class=main>
   <div id=scene_container>
   </div>
-  <div style="width: 440px; font-family: Minecraft,fantasy;" class=pnt onClick="scenes.push(new Scene(scenes.length)); mainGui.switchGuiTarget(scenes.length -1);">Add Scene</div>
+  <div style="width: 440px; font-family: Minecraft,fantasy;" class=pnt onClick="displayNewSceneMenu();">Create Scene...</div>
+  <div style="width: 440px; font-family: Minecraft,fantasy; margin-top: 5px;" class="pnt" onClick="createNewScene()" title="Creates a scene with previous settings.">Quick Scene</div>
 </div>
 
 <script language="javascript">
@@ -191,7 +193,7 @@ var firstTick = 0;
 var lastTick = 0;
 var thisTick = 0;
 var tickCounter = 0;
-var lastAvrg = 40;
+var lastAvg = 40;
 
 var request_start = 0;
 var request_end = 0;
@@ -200,7 +202,7 @@ var current_request_id = 0;
 var request_counter = 0;
 var returnData = null;
 
-var rcversion = "8.3.0.0";
+var rcVersion = "8.3.0.0";
 
 var selectedFuelItem = null;
 var fuelMenuSteps = 0;
@@ -223,8 +225,11 @@ var BOILERS_EXPLODE = true;
 //Railcraft options
 var efficiencyModifier = 1;
 
-  function tick(force = false)
+  function tick(force)
   {
+    if (force === undefined)
+      force = false;
+
     if (!paused || force)
     {
       tickCounter++;
@@ -237,10 +242,10 @@ var efficiencyModifier = 1;
 
       var secondsSinceStart = ((thisTick - firstTick) / 1000);
 
-      lastAvrg = Math.round((tickCounter / secondsSinceStart) * 100) / 100;
+      lastAvg = Math.round((tickCounter / secondsSinceStart) * 100) / 100;
 
-      //document.getElementById("debug").innerHTML = "Seconds since start: " + secondsSinceStart + " Average ticks per second: " + lastAvrg;
-      document.getElementById("tps_display").innerHTML = "Global TPS: " + lastAvrg;
+      //document.getElementById("debug").innerHTML = "Seconds since start: " + secondsSinceStart + " Average ticks per second: " + lastAvg;
+      document.getElementById("tps_display").innerHTML = "Global TPS: " + lastAvg;
 
       lastTick = new Date().getTime();
 
@@ -272,6 +277,11 @@ var efficiencyModifier = 1;
     document.getElementById("global_run").style.backgroundPosition = "0px 0px";
     tick(true);
   }
+
+  function setVisible(element)
+  {
+    element.style.visibility = "visible";
+  }
   
   var activeTooltip = null;
   var activeTooltipScene = 0;
@@ -286,8 +296,6 @@ var efficiencyModifier = 1;
   var mainGui = new Gui(scenes[0].boiler);
   
   fuelQuery();
-  
-  var upd_id = setInterval(function(mainGui) {if (mainGui.updateFuelMenu()) {clearInterval(upd_id);}}, 10, mainGui);
   
 /*   for (var i = 0; i < mainLog.items.length; i++)
   {

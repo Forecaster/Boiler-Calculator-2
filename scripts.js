@@ -1,3 +1,15 @@
+if (!String.format) {
+  String.format = function(format) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return format.replace(/{(\d+)}/g, function(match, number) {
+      return typeof args[number] != 'undefined'
+        ? args[number]
+        : match
+        ;
+    });
+  };
+}
+
 function notify(message)
 {
   var notify = document.getElementById("nutter");
@@ -92,7 +104,9 @@ function fuelQuerySuccess()
     {
       var currentFuel = returnData[index];
       if (currentFuel.hasOwnProperty("name"))
+      {
         fuels.push(new Fuel(index, currentFuel.name, currentFuel.burn_time, currentFuel.state, currentFuel.stacksize, currentFuel.source, currentFuel.icon));
+      }
     }
     
     clearInterval(current_request_id);
@@ -108,7 +122,7 @@ function fuelQuery()
   
   current_request_id = setInterval("fuelQuerySuccess()", 100);
   
-  $.post('script_fuel_query.php', { version: rcversion }, function(data) {returnData = data; request_end = new Date().getTime();}, "json");
+  $.post('script_fuel_query.php', { version: rcVersion }, function(data) {console.log(data); returnData = data; request_end = new Date().getTime();}, "json");
 }
 
 function ticksToTime(ticks)
@@ -176,4 +190,33 @@ function cycleFuelMenuRight(interval)
 
     setTimeout(cycleFuelMenuRight, interval, [newInterval]);
   }
+}
+
+function displayNewSceneMenu()
+{
+  document.getElementById("new_scene_menu").style.visibility = "visible";
+}
+
+function cancelNewScene()
+{
+  document.getElementById("new_scene_menu").style.visibility = "collapse";
+}
+
+function createNewScene(size, type)
+{
+  document.getElementById("new_scene_menu").style.visibility = "collapse";
+  if (size == undefined)
+    size = document.getElementById("form_boiler_size").value;
+  if (type == undefined)
+    type = document.getElementById("form_boiler_type").value;
+  scenes.push(new Scene(scenes.length, size, type)); mainGui.switchGuiTarget(scenes.length -1);
+}
+
+function hideScene(id)
+{
+  scenes[id].tickRate = 0;
+  var scene = document.getElementById("scene_wrapper_" + id);
+  scene.style.visibility = "collapse";
+  scene.style.height = 0;
+  scene.style.position = "absolute";
 }

@@ -1,10 +1,52 @@
 .scene
 {
   position: relative;
-  border: 6px double black;
+  z-index: 0;
+  border: 3px solid black;
   
   margin: 15px;
   width: 400px;
+}
+
+.scene_menu
+{
+  position: absolute;
+
+  z-index: -1;
+
+  width: 156px;
+  height: 200px;
+  top: 3px;
+  right: -35px;
+
+  background-color: lightgray;
+
+  border: 1px groove #000000;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+
+  transition-property: right;
+  transition-duration: 2s;
+}
+
+.scene_menu_content
+{
+  margin-left: 5px;
+  margin-top: 5px;
+}
+
+.scene_menu_toggle
+{
+  position: absolute;
+
+  top: 0;
+  right: 0;
+
+  height: 100%;
+  width: 25px;
+
+  cursor: pointer;
+  /*background-color: red;*/
 }
 
 .scene_info_display

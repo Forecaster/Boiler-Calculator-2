@@ -6,49 +6,57 @@ function Scene(id, numTanks, boilerType)
     return;
   }
   if (numTanks == undefined)
-    var numTanks = 1;
+    numTanks = 1;
   if (boilerType == undefined)
-    var boilerType = "LP";
+    boilerType = "LP";
 
   this.sceneTemplate = "" +
-  "<div id=scene_" + id + " class=scene>" +
-    "<div id=time_controls_" + id + " class=time_control_container>" +
-      "<div id=time_control_pause_" + id + " class=\"time_control_pause pnt\" onClick=\"scenes[" + id + "].setTickRate(0);\"></div>" +
-      "<div id=time_control_half_" + id + " class=\"time_control_half pnt\" onClick=\"scenes[" + id + "].setTickRate(4);\"></div>" +
-      "<div id=time_control_run_" + id + " class=\"time_control_run pnt\" onClick=\"scenes[" + id + "].setTickRate(2);\"></div>" +
-      "<div id=time_control_double_" + id + " class=\"time_control_double pnt\" onClick=\"scenes[" + id + "].setTickRate(1);\"></div>" +
-    "</div>" +
-    "<div class=\"scene_name\"><div id=\"scene_name_" + id + "\" style=\"display: inline-block;\" class=\"pnt\" onClick=\"mainGui.switchGuiTarget(" + id + ");\">Scene #" + id + "</div></div>" +
-    "<div class=sky>" +
-      "<div class=machines>" +
-        "<div id=steel_tank_fluid_" + id + " class=steel_tank style=\"background-image: url('images/steam_still_x2.gif'); background-size: 96px 32px;\">" +
-          "<div id=steel_tank_" + id + " class=steel_tank onMouseOver=\"setTooltip('tt_steel_tank', " + id + ");\" onMouseOut=\"clearTooltip();\"></div>" +
-        "</div>" +
-        "<div style=\"display: inline-block;\">" +
-          "<div id=steam_valve_" + id + "_readout style=\"font-size: 10pt;\">0%</div>" +
-          "<div id=steam_valve_" + id + " class=valve style=\"background-position: 0px 0px;\">" +
-            "<div id=steam_valve_open_" + id + " class=valve_control onClick=\"scenes[" + id + "].steamValve.open();\" title=\"Open valve\"></div>" +
-            "<div id=steam_valve_close_" + id + " class=valve_control onClick=\"scenes[" + id + "].steamValve.close();\" title=\"Close Valve\" ></div>" +
+  "<div id=\"scene_wrapper_" + id + "\" class=\"scene\" style=\"margin: 0; border: none;\">" +
+    "<div id=scene_" + id + " class=scene>" +
+      "<div id=time_controls_" + id + " class=time_control_container>" +
+        "<div id=time_control_pause_" + id + " class=\"time_control_pause pnt\" onClick=\"scenes[" + id + "].setTickRate(0);\"></div>" +
+        "<div id=time_control_half_" + id + " class=\"time_control_half pnt\" onClick=\"scenes[" + id + "].setTickRate(4);\"></div>" +
+        "<div id=time_control_run_" + id + " class=\"time_control_run pnt\" onClick=\"scenes[" + id + "].setTickRate(2);\"></div>" +
+        "<div id=time_control_double_" + id + " class=\"time_control_double pnt\" onClick=\"scenes[" + id + "].setTickRate(1);\"></div>" +
+      "</div>" +
+      "<div class=\"scene_name\"><div id=\"scene_name_" + id + "\" style=\"display: inline-block;\" class=\"pnt\" onClick=\"mainGui.switchGuiTarget(" + id + ");\">Scene #" + id + "</div></div>" +
+      "<div class=sky>" +
+        "<div class=machines>" +
+          "<div id=steel_tank_fluid_" + id + " class=steel_tank style=\"background-image: url('images/steam_still_x2.gif'); background-size: 96px 32px;\">" +
+            "<div id=steel_tank_" + id + " class=steel_tank onMouseOver=\"setTooltip('tt_steel_tank', " + id + ");\" onMouseOut=\"clearTooltip();\"></div>" +
           "</div>" +
-        "</div>" +
-        "<div id=boiler_" + id + " class=\"boiler pnt\" onClick=\"mainGui.switchGuiTarget(" + id + ");\">" +
-          "<div id=\"boiler_tank_number_" + id + "\" class=boiler_tank_number>" + numTanks + " " + boilerType + "</div>" +
-          "<div id=boiler_tanks_" + id + " class=boiler_tanks></div>" +
-          "<div id=boiler_firebox_" + id + " class=boiler_firebox style=\"background-position: 0px 0px;\"></div>" +
-        "</div>" +
-        "<div style=\"display: inline-block;\">" +
-          "<div id=water_valve_" + id + "_readout style=\"font-size: 10pt;\">0%</div>" +
-          "<div id=water_valve_" + id + " class=valve style=\"background-position: 0px 0px;\">" +
-            "<div id=water_valve_open_" + id + " class=valve_control onClick=\"scenes[" + id + "].waterValve.open();\" title=\"Open valve\"></div>" +
-            "<div id=water_valve_close_" + id + " class=valve_control onClick=\"scenes[" + id + "].waterValve.close();\" title=\"Close Valve\" ></div>" +
+          "<div style=\"display: inline-block;\">" +
+            "<div id=steam_valve_" + id + "_readout style=\"font-size: 10pt;\">0%</div>" +
+            "<div id=steam_valve_" + id + " class=valve style=\"background-position: 0px 0px;\">" +
+              "<div id=steam_valve_open_" + id + " class=valve_control onClick=\"scenes[" + id + "].steamValve.open();\" title=\"Open valve\"></div>" +
+              "<div id=steam_valve_close_" + id + " class=valve_control onClick=\"scenes[" + id + "].steamValve.close();\" title=\"Close Valve\" ></div>" +
+            "</div>" +
           "</div>" +
+          "<div id=boiler_" + id + " class=\"boiler pnt\" onClick=\"mainGui.switchGuiTarget(" + id + ");\">" +
+            "<div id=\"boiler_tank_number_" + id + "\" class=boiler_tank_number>" + numTanks + " " + boilerType + "</div>" +
+            "<div id=boiler_tanks_" + id + " class=boiler_tanks></div>" +
+            "<div id=boiler_firebox_" + id + " class=boiler_firebox style=\"background-position: 0px 0px;\"></div>" +
+          "</div>" +
+          "<div style=\"display: inline-block;\">" +
+            "<div id=water_valve_" + id + "_readout style=\"font-size: 10pt;\">0%</div>" +
+            "<div id=water_valve_" + id + " class=valve style=\"background-position: 0px 0px;\">" +
+              "<div id=water_valve_open_" + id + " class=valve_control onClick=\"scenes[" + id + "].waterValve.open();\" title=\"Open valve\"></div>" +
+              "<div id=water_valve_close_" + id + " class=valve_control onClick=\"scenes[" + id + "].waterValve.close();\" title=\"Close Valve\" ></div>" +
+            "</div>" +
+          "</div>" +
+          "<div id=wood_tank_" + id + " class=woodTank onMouseOver=\"setTooltip('tt_wood_tank', " + id + ");\" onMouseOut=\"clearTooltip();\"></div>" +
         "</div>" +
-        "<div id=wood_tank_" + id + " class=woodTank onMouseOver=\"setTooltip('tt_wood_tank', " + id + ");\" onMouseOut=\"clearTooltip();\"></div>" +
+      "</div>" +
+      "<div class=ground>" +
+        "<div id=\"scene_tps_display_" + id + "\" class=\"scene_info_display\" style=\"bottom: 2px; left: 2px;\"></div>" +
+        "<div id=\"scene_time_display_" + id + "\" class=\"scene_info_display\" style=\"bottom: 2px; right: 2px;\" onClick=\"scenes[" + id + "].explode()\"></div>" +
       "</div>" +
     "</div>" +
-    "<div class=ground>" +
-      "<div id=\"scene_tps_display_" + id + "\" class=\"scene_info_display\" style=\"bottom: 2px; left: 2px;\"></div>" +
-      "<div id=\"scene_time_display_" + id + "\" class=\"scene_info_display\" style=\"bottom: 2px; right: 2px;\" onClick=\"scenes[" + id + "].explode()\"></div>" +
+    "<div id=\"scene_menu_" + id + "\" class=\"scene_menu\" style=\"right: -35px;\">" +
+      "<div class=\"scene_menu_content\">" +
+        "<div class=\"pnt\" onClick=\"hideScene(" + id + ");\">Remove Scene</div>" +
+      "</div>" +
+      "<div onClick=\"toggleSettings(this);\" class=\"scene_menu_toggle\"></div>" +
     "</div>" +
   "</div>";
 
@@ -185,4 +193,12 @@ Scene.prototype.tick = function()
   }
   document.getElementById("scene_tps_display_" + this.id).innerHTML = this.lastAvrg + " tps";
   document.getElementById("scene_time_display_" + this.id).innerHTML = ticksToTime(this.displayTickCounter);
+}
+
+function toggleSettings(element)
+{
+  if (element.parentNode.style.right == "-35px")
+    element.parentNode.style.right = "-178px";
+  else
+    element.parentNode.style.right = "-35px";
 }
